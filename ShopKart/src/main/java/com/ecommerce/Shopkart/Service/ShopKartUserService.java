@@ -6,5 +6,7 @@ import com.ecommerce.Shopkart.Dto.UserDetails;
 public interface ShopKartUserService {
     GeneralResponse userLogin(UserDetails userDetails);
 
-    GeneralResponse userRegister(UserDetails userDetails);
+    UserDetails userRegister(UserDetails userDetails);
+
+    UserDetails loadUserByUserId(String userId);
 }
