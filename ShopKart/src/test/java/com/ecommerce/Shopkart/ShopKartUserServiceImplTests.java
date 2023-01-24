@@ -29,9 +29,9 @@ public class ShopKartUserServiceImplTests {
     @Test
     public void userLoginNotNullTest()
     {
-        userDetails.setUserId("Cabbage");
+        userDetails.setUsername("Cabbage");
         userDetails.setPassword("Cabbage");
-        when(userDetailsRepository.findByUserId(userDetails.getUserId())).thenReturn(userDetails);
+        when(userDetailsRepository.findByUserId(userDetails.getUsername())).thenReturn(userDetails);
 
         GeneralResponse response = shopKartUserService.userLogin(userDetails);
         GeneralResponse expected = GeneralResponse.builder().statusCode(String.valueOf(HttpStatus.OK.value())).statusDesc("Login Successful").build();
@@ -51,11 +51,11 @@ public class ShopKartUserServiceImplTests {
     @Test
     public void userLoginFailedTest()
     {
-        userDetails.setUserId("Babbage");
+        userDetails.setUsername("Babbage");
         userDetails.setPassword("Cabbage");
 
         UserDetails userDetailsRepo = new UserDetails(1,"Babbage","Babbage","Babbage","babbage@gmail.com","89838383838");
-        when(userDetailsRepository.findByUserId(userDetails.getUserId())).thenReturn(userDetailsRepo);
+        when(userDetailsRepository.findByUserId(userDetails.getUsername())).thenReturn(userDetailsRepo);
 
         GeneralResponse response = shopKartUserService.userLogin(userDetails);
         GeneralResponse expected = GeneralResponse.builder().statusCode(String.valueOf(HttpStatus.BAD_REQUEST.value())).statusDesc("Login Failed").build();
@@ -66,10 +66,10 @@ public class ShopKartUserServiceImplTests {
     @Test
     public void userLoginExceptionTest()
     {
-        userDetails.setUserId("Babbage");
+        userDetails.setUsername("Babbage");
         userDetails.setPassword("Cabbage");
 
-        when(userDetailsRepository.findByUserId(userDetails.getUserId())).thenThrow(new RuntimeException());
+        when(userDetailsRepository.findByUserId(userDetails.getUsername())).thenThrow(new RuntimeException());
 
         GeneralResponse response = shopKartUserService.userLogin(userDetails);
         GeneralResponse expected = GeneralResponse.builder().statusCode(String.valueOf(HttpStatus.BAD_REQUEST.value())).statusDesc("Something went wrong").build();
@@ -89,7 +89,7 @@ public class ShopKartUserServiceImplTests {
     @Test
     public void userRegisterNotNullTest()
     {
-        userDetails.setUserId("Cabbage");
+        userDetails.setUsername("Cabbage");
         userDetails.setPassword("Cabbage");
         userDetails.setName("Cabbage");
         userDetails.setPhoneNo("9827272727");
@@ -104,7 +104,7 @@ public class ShopKartUserServiceImplTests {
     @Test
     public void userRegisterExceptionTest()
     {
-        userDetails.setUserId("Cabbage");
+        userDetails.setUsername("Cabbage");
         userDetails.setPassword("Cabbage");
         userDetails.setName("Cabbage");
         userDetails.setPhoneNo("9827272727");
@@ -120,7 +120,7 @@ public class ShopKartUserServiceImplTests {
     @Test
     public void userRegisterInsufficientDataTest()
     {
-        userDetails.setUserId("Cabbage");
+        userDetails.setUsername("Cabbage");
         userDetails.setPassword(null);
         userDetails.setName("Cabbage");
         userDetails.setPhoneNo("9827272727");

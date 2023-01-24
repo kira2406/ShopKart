@@ -2,6 +2,10 @@ package com.ecommerce.Shopkart.ServiceImpl;
 
 import com.ecommerce.Shopkart.Dto.GeneralResponse;
 import com.ecommerce.Shopkart.Dto.ProductInfo;
+import com.ecommerce.Shopkart.Dto.ProductRequestDTO;
+import com.ecommerce.Shopkart.Dto.ProductResponseDTO;
+import com.ecommerce.Shopkart.Exception.ProductNotFoundException;
+import com.ecommerce.Shopkart.Exception.ProductServiceBusinessException;
 import com.ecommerce.Shopkart.Repo.ProductDetailsRepository;
 import com.ecommerce.Shopkart.Service.ShopKartProductService;
 import com.ecommerce.Shopkart.Util.Util;
@@ -10,7 +14,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -20,61 +26,53 @@ public class ShopKartProductServiceImpl implements ShopKartProductService {
     ProductDetailsRepository productDetailsRepository;
 
     @Override
-    public GeneralResponse addProduct(ProductInfo productInfo) {
+    public ProductResponseDTO addProduct(ProductRequestDTO productRequestDTO) {
     String methodName = new Object(){}.getClass().getEnclosingMethod().getName();
+        ProductResponseDTO productResponseDTO;
         try {
             log.info(methodName+" has invoked");
-            if (productInfo != null && Util.stringNullChecker(productInfo.getProductName()) && Util.stringNullChecker(productInfo.getProductColor()) && Util.stringNullChecker(productInfo.getDescription()) && productInfo.getProductCost() > 0.0) {
-                productDetailsRepository.save(productInfo);
+                ProductInfo product = Util.convertToEntity(productRequestDTO);
+                ProductInfo createdProduct = productDetailsRepository.save(product);
                 log.info("Product Added Successfully");
-                return GeneralResponse.builder().statusCode(String.valueOf(HttpStatus.OK.value())).statusDesc("Product Added Successfully").build();
-            } else {
-                log.info("Insufficient Data");
-                return GeneralResponse.builder().statusCode(String.valueOf(HttpStatus.BAD_REQUEST.value())).statusDesc("Insufficient Data").build();
-            }
-
+                productResponseDTO = Util.convertToDTO(createdProduct);
         }
-        catch(Exception e)
+        catch(Exception ex)
         {
-            log.error("Exception "+e.getMessage());
-            return GeneralResponse.builder().statusCode(String.valueOf(HttpStatus.BAD_REQUEST.value())).statusDesc("Something went wrong").build();
+            log.error("Exception occurred while storing product to database , Exception message {}", ex.getMessage());
+            throw new ProductServiceBusinessException("Exception occurred while create a new product");
         }
+        return productResponseDTO;
 
     }
 
     @Override
-    public GeneralResponse deleteProduct(ProductInfo productInfo) {
-        String methodName = new Object(){}.getClass().getEnclosingMethod().getName();
+    public GeneralResponse<?> deleteProduct(Integer productId) {
+
         try{
-            log.info(methodName+" has invoked");
-            if(productInfo.getProductId()!=null && productInfo.getProductId()!=0){
-
-                if(productDetailsRepository.existsById(productInfo.getProductId()))
+                if(productDetailsRepository.existsById(productId))
                 {
-                    productDetailsRepository.deleteById(productInfo.getProductId());
+                    productDetailsRepository.deleteById(productId);
                     log.info("Product deleted successfully");
-                    return GeneralResponse.builder().statusCode(String.valueOf(HttpStatus.OK.value())).statusDesc("Product deleted successfully").build();
-                }else {
-                    log.info("Product with id "+productInfo.getProductId()+" does not exist");
-                    return GeneralResponse.builder().statusCode(String.valueOf(HttpStatus.NOT_FOUND.value())).statusDesc("Product with id "+productInfo.getProductId()+" does not exist").build();
+                } else {
+                    log.info("Product with id "+productId+" does not exist");
+                    throw new ProductNotFoundException("No product exists with product ID "+productId);
                 }
-
-            }
-            else
-            {
-                log.info("Insufficient Data");
-                return GeneralResponse.builder().statusCode(String.valueOf(HttpStatus.BAD_REQUEST.value())).statusDesc("Insufficient data").build();
-            }
         }
-        catch(Exception e)
-        {
-            log.error("Exception "+e.getMessage());
-            return GeneralResponse.builder().statusCode(String.valueOf(HttpStatus.BAD_REQUEST.value())).statusDesc("Something went wrong").build();
+        catch(ProductNotFoundException ex){
+            log.error("Exception occurred: {}",ex.getMessage());
+            throw new ProductNotFoundException(ex.getMessage());
         }
+        catch(Exception e) {
+            log.error("Exception occurred: {}", e.getMessage());
+            throw new ProductServiceBusinessException("Exception occurred while deleting product");
+        }
+        return GeneralResponse.builder().status("SUCCESS").build();
     }
 
     @Override
-    public GeneralResponse getProducts() {
+    public List<ProductResponseDTO> getProducts() {
+
+        List<ProductResponseDTO> productResponseDTOS = null;
         String methodName = new Object(){}.getClass().getEnclosingMethod().getName();
         
         try{
@@ -83,52 +81,66 @@ public class ShopKartProductServiceImpl implements ShopKartProductService {
             if(products.size()>0)
             {
                 log.info("Products fetched successfully");
-                return  GeneralResponse.builder().statusCode(String.valueOf(HttpStatus.OK.value())).products(products).statusDesc("Products fetched successfully").build();
+                productResponseDTOS = products.stream()
+                        .map(Util::convertToDTO)
+                        .collect(Collectors.toList());
             }
             else{
-                return GeneralResponse.builder().statusCode(String.valueOf(HttpStatus.BAD_REQUEST.value())).statusDesc("Products fetch failed").build();
-
+                productResponseDTOS = Collections.emptyList();
             }
 
         }
-        catch(Exception e)
+        catch(Exception ex)
         {
-            log.error("Exception "+e.getMessage());
-            return GeneralResponse.builder().statusCode(String.valueOf(HttpStatus.BAD_REQUEST.value())).statusDesc("Something went wrong").build();
+            log.error("Exception occurred: {}",ex.getMessage());
+            throw new ProductServiceBusinessException("Exception occurred when fetching products from Database");
         }
+        return productResponseDTOS;
     }
 
     @Override
-    public GeneralResponse updateProduct(ProductInfo productInfo) {
-        String methodName = new Object() {}.getClass().getEnclosingMethod().getName();
+    public GeneralResponse<?> updateProduct(Integer productId, ProductRequestDTO productRequestDTO) {
         try {
-            log.info(methodName + " has invoked");
-            if(productInfo != null && productInfo.getProductId()!=null && productInfo.getProductId()!=0 && productDetailsRepository.existsById(productInfo.getProductId())) {
+            log.info("updateProduct() method has invoked");
+            if(productDetailsRepository.existsById(productId)){
+                ProductInfo productInfo = Util.convertToEntity(productRequestDTO);
+                productInfo.setProductId(productId);
+                productDetailsRepository.save(productInfo);
+            }else{
+                throw new ProductNotFoundException("No product exists with product ID "+productId);
+            }
 
-                if (Util.stringNullChecker(productInfo.getProductName()) && Util.stringNullChecker(productInfo.getProductColor()) && Util.stringNullChecker(productInfo.getDescription()) && productInfo.getProductCost()!=null && productInfo.getProductCost() > 0.0) {
-                    productDetailsRepository.save(productInfo);
-                    log.info("Product updated successfully");
-                    return GeneralResponse.builder().statusCode(String.valueOf(HttpStatus.OK.value())).statusDesc("Product updated successfully").build();
-                } else {
-                    log.info("Insufficient data");
-                    return GeneralResponse.builder().statusCode(String.valueOf(HttpStatus.BAD_REQUEST.value())).statusDesc("Insufficient data").build();
-                }
-            }
-            else {
-                if(productInfo!=null && productInfo.getProductId()!=null) {
-                    log.info("No product exists with ID " + String.valueOf(productInfo.getProductId()));
-                    return GeneralResponse.builder().statusCode(String.valueOf(HttpStatus.BAD_REQUEST.value())).statusDesc("No product exists with ID " + String.valueOf(productInfo.getProductId())).build();
-                }
-                else{
-                    log.info("No product Id entered");
-                    return GeneralResponse.builder().statusCode(String.valueOf(HttpStatus.BAD_REQUEST.value())).statusDesc("No product Id entered").build();
-                }
-            }
-        } catch (Exception e) {
-            log.error("Exception "+e.getMessage());
-            return GeneralResponse.builder().statusCode(String.valueOf(HttpStatus.BAD_REQUEST.value())).statusDesc("Something went wrong").build();
+        }
+        catch(ProductNotFoundException ex){
+            log.error("Exception occurred: {}",ex.getMessage());
+            throw new ProductNotFoundException(ex.getMessage());
+        }
+        catch (Exception ex) {
+            log.error("Exception occurred: {}",ex.getMessage());
+            throw new ProductServiceBusinessException("Exception occurred when updating product");
         }
 
+        return GeneralResponse.builder().status("SUCCESS").build();
+    }
+
+    @Override
+    public ProductResponseDTO getProductById(Integer productId) {
+        ProductResponseDTO productResponseDTO;
+
+        //String supplierCode="";
+        try {
+            log.info("getProductById() has invoked");
+
+            ProductInfo product = productDetailsRepository.findById(productId)
+                    .orElseThrow(() -> new ProductNotFoundException("Product not found with id " + productId));
+            productResponseDTO = Util.convertToDTO(product);
+
+        } catch (Exception ex) {
+            log.error("Exception occurred while fetching product {} from database , Exception message {}", productId, ex.getMessage());
+            throw new ProductServiceBusinessException("Exception occurred while fetch product from Database " + productId);
+        }
+
+        return productResponseDTO;
     }
 
 }

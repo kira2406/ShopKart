@@ -1,39 +1,74 @@
 package com.ecommerce.Shopkart.Exception;
 
-import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
-import com.ecommerce.Shopkart.Dto.CustomErrorResponse;
-import lombok.extern.java.Log;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
+import com.ecommerce.Shopkart.Dto.ErrorResponseDTO;
+import com.ecommerce.Shopkart.Dto.GeneralResponse;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    @Autowired
-    Environment env;
-    @ExceptionHandler(UsernameNotFoundException.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    public @ResponseBody CustomErrorResponse handleUsernameNotFoundException(UsernameNotFoundException ex) {
-        return new CustomErrorResponse(HttpStatus.NOT_FOUND.value(),ex.getMessage());
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public GeneralResponse<?> handleUsernameNotFoundException(MethodArgumentNotValidException ex) {
+        GeneralResponse<?> response = new GeneralResponse<>();
+        List<ErrorResponseDTO> errors = new ArrayList<>();
+        ex.getBindingResult().getFieldErrors()
+                .forEach(error -> {
+                    ErrorResponseDTO errorDTO = new ErrorResponseDTO(error.getField(), error.getDefaultMessage());
+                    errors.add(errorDTO);
+                });
+        response.setStatus("FAILED");
+        response.setErrors(errors);
+        return response;
     }
 
     @ExceptionHandler(LoginFailedException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public @ResponseBody CustomErrorResponse handleLoginFailedException(LoginFailedException ex){
-        return new CustomErrorResponse(HttpStatus.NOT_FOUND.value(), ex.getMessage());
+    public GeneralResponse<?> handleLoginFailedException(LoginFailedException ex){
+        return GeneralResponse.builder()
+                .status("FAILED")
+                .errors(Collections.singletonList(new ErrorResponseDTO("", ex.getMessage()))).build();
     }
 
     @ExceptionHandler(ControllerException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public @ResponseBody CustomErrorResponse handleControllerException(ControllerException ex){
-        return new CustomErrorResponse((HttpStatus.BAD_REQUEST.value()),ex.getMessage());
+    public GeneralResponse<?> handleControllerException(ControllerException ex){
+        return GeneralResponse.builder()
+                .status("FAILED")
+                .errors(Collections.singletonList(new ErrorResponseDTO("", ex.getMessage()))).build();
     }
+    @ExceptionHandler(ProductNotFoundException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public GeneralResponse<?> handleUsernameNotFoundException(ProductNotFoundException ex) {
+        return GeneralResponse.builder()
+                .status("FAILED")
+                .errors(Collections.singletonList(new ErrorResponseDTO("", ex.getMessage()))).build();
+    }
+
+    @ExceptionHandler(ProductServiceBusinessException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public GeneralResponse<?> handleServiceException(ProductServiceBusinessException ex) {
+        return GeneralResponse.builder()
+                .status("FAILED")
+                .errors(Collections.singletonList(new ErrorResponseDTO("", ex.getMessage()))).build();
+    }
+
+    @ExceptionHandler(UsernameNotFoundException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public GeneralResponse<?> handleUsernameNotFoundException(UsernameNotFoundException ex) {
+        return GeneralResponse.builder()
+                .status("FAILED")
+                .errors(Collections.singletonList(new ErrorResponseDTO("", ex.getMessage()))).build();
+    }
+
+
 
 }

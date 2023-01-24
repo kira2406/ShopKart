@@ -5,7 +5,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import lombok.*;
-import org.jetbrains.annotations.NotNull;
 
 @Entity
 @Getter
@@ -20,7 +19,7 @@ public class UserDetails {
     @NonNull
     private String name;
     @NonNull
-    private String userId;
+    private String username;
     @NonNull
     private String password;
     @NonNull

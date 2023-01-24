@@ -1,17 +1,16 @@
 package com.ecommerce.Shopkart.Dto;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.List;
 
-@Getter
-@Setter
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 @Builder
-public class GeneralResponse {
+public class GeneralResponse<T> {
 
-    private String statusCode;
-    private String statusDesc;
-    private List<ProductInfo> products;
+    private String status;
+    private List<ErrorResponseDTO> errors;
+    private T data;
 }

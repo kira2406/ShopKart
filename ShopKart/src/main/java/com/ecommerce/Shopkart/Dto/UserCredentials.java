@@ -11,7 +11,7 @@ import org.jetbrains.annotations.NotNull;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserCredentials {
-    private String userId;
+    private String username;
 
     @NotNull
     private String password;

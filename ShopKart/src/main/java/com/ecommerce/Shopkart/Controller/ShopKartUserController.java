@@ -1,12 +1,10 @@
 package com.ecommerce.Shopkart.Controller;
 
-import com.ecommerce.Shopkart.Dto.GeneralResponse;
 import com.ecommerce.Shopkart.Dto.UserCredentials;
 import com.ecommerce.Shopkart.Dto.UserDetails;
 import com.ecommerce.Shopkart.Exception.ControllerException;
 import com.ecommerce.Shopkart.Exception.LoginFailedException;
 import com.ecommerce.Shopkart.Service.ShopKartUserService;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,13 +23,12 @@ public class ShopKartUserController {
 
             try {
 
-                final UserDetails userDetails = shopKartUserService.loadUserByUserId(userCredentials.getUserId());
+                final UserDetails userDetails = shopKartUserService.loadUserByUsername(userCredentials.getUsername());
 
                 if (userDetails.getPassword().equals(userCredentials.getPassword())) {
-                    return new ResponseEntity<>(
-                            userDetails, HttpStatus.OK);
+                    return new ResponseEntity<>(userDetails, HttpStatus.OK);
                 } else {
-                    throw new LoginFailedException();
+                    throw new LoginFailedException("login failed");
                 }
             }
             catch(LoginFailedException e)
@@ -49,8 +46,7 @@ public class ShopKartUserController {
 
         try {
             UserDetails userDetailsRepo = shopKartUserService.userRegister(userDetails);
-            return new ResponseEntity<>(
-                    userDetailsRepo, HttpStatus.CREATED);
+            return new ResponseEntity<>(userDetailsRepo, HttpStatus.CREATED);
         }
         catch(Exception e)
         {
