@@ -27,10 +27,9 @@ public class ShopKartProductServiceImpl implements ShopKartProductService {
 
     @Override
     public ProductResponseDTO addProduct(ProductRequestDTO productRequestDTO) {
-    String methodName = new Object(){}.getClass().getEnclosingMethod().getName();
         ProductResponseDTO productResponseDTO;
         try {
-            log.info(methodName+" has invoked");
+            log.info("addProduct() has invoked");
                 ProductInfo product = Util.convertToEntity(productRequestDTO);
                 ProductInfo createdProduct = productDetailsRepository.save(product);
                 log.info("Product Added Successfully");
@@ -73,10 +72,9 @@ public class ShopKartProductServiceImpl implements ShopKartProductService {
     public List<ProductResponseDTO> getProducts() {
 
         List<ProductResponseDTO> productResponseDTOS = null;
-        String methodName = new Object(){}.getClass().getEnclosingMethod().getName();
         
         try{
-            log.info(methodName+" has invoked");
+            log.info("getProducts() has invoked");
             List<ProductInfo> products = productDetailsRepository.findAll();
             if(products.size()>0)
             {
@@ -135,9 +133,14 @@ public class ShopKartProductServiceImpl implements ShopKartProductService {
                     .orElseThrow(() -> new ProductNotFoundException("Product not found with id " + productId));
             productResponseDTO = Util.convertToDTO(product);
 
-        } catch (Exception ex) {
+        }
+        catch(ProductNotFoundException ex){
             log.error("Exception occurred while fetching product {} from database , Exception message {}", productId, ex.getMessage());
-            throw new ProductServiceBusinessException("Exception occurred while fetch product from Database " + productId);
+            throw new ProductNotFoundException(ex.getMessage());
+        }
+        catch (Exception ex) {
+            log.error("Exception occurred while fetching product {} from database , Exception message {}", productId, ex.getMessage());
+            throw new ProductServiceBusinessException("Exception occurred while fetch product from Database with id " + productId);
         }
 
         return productResponseDTO;

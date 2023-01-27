@@ -17,10 +17,10 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public GeneralResponse<?> handleUsernameNotFoundException(MethodArgumentNotValidException ex) {
+    public GeneralResponse<?> handleArgumentNotValidException(MethodArgumentNotValidException ex) {
         GeneralResponse<?> response = new GeneralResponse<>();
         List<ErrorResponseDTO> errors = new ArrayList<>();
-        ex.getBindingResult().getFieldErrors()
+        ex.getBindingResult().getFieldErrors() // [ [field, error], [field, error]]
                 .forEach(error -> {
                     ErrorResponseDTO errorDTO = new ErrorResponseDTO(error.getField(), error.getDefaultMessage());
                     errors.add(errorDTO);
@@ -47,7 +47,7 @@ public class GlobalExceptionHandler {
     }
     @ExceptionHandler(ProductNotFoundException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public GeneralResponse<?> handleUsernameNotFoundException(ProductNotFoundException ex) {
+    public GeneralResponse<?> handleProductNotFoundException(ProductNotFoundException ex) {
         return GeneralResponse.builder()
                 .status("FAILED")
                 .errors(Collections.singletonList(new ErrorResponseDTO("", ex.getMessage()))).build();

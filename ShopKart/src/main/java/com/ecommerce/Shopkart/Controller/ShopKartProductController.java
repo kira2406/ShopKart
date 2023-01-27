@@ -29,50 +29,50 @@ public class ShopKartProductController {
     public ResponseEntity<?> addProduct(@RequestBody @Valid ProductRequestDTO productRequestDTO){
 
         ProductResponseDTO productResponseDTO = shopKartProductService.addProduct(productRequestDTO);
-        GeneralResponse<ProductResponseDTO> responseDTO = GeneralResponse
+        GeneralResponse<ProductResponseDTO> response = GeneralResponse
                 .<ProductResponseDTO>builder()
                 .status("SUCCESS")
                 .data(productResponseDTO)
                 .build();
 
-        return new ResponseEntity<>(responseDTO, HttpStatus.CREATED);
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
-    @PostMapping("/deleteProduct/{productId}")
+    @GetMapping("/deleteProduct/{productId}")
     public ResponseEntity<?> deleteProduct(@PathVariable Integer productId){
-        GeneralResponse<?> responseDTO = shopKartProductService.deleteProduct(productId);
-        return new ResponseEntity<>(responseDTO, HttpStatus.OK);
+        GeneralResponse<?> response = shopKartProductService.deleteProduct(productId);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @GetMapping("/getProducts")
     public ResponseEntity<?> getProducts(){
 
         List<ProductResponseDTO> products = shopKartProductService.getProducts();
-        GeneralResponse<List<ProductResponseDTO>> responseDTO = GeneralResponse
+        GeneralResponse<List<ProductResponseDTO>> response = GeneralResponse
                 .<List<ProductResponseDTO>>builder()
                 .status("SUCCESS")
                 .data(products)
                 .build();
 
-        return new ResponseEntity<>(responseDTO, HttpStatus.OK);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @GetMapping("/getProducts/{productId}")
     public ResponseEntity<?> getProduct(@PathVariable Integer productId) {
 
         ProductResponseDTO productResponseDTO = shopKartProductService.getProductById(productId);
-        GeneralResponse<ProductResponseDTO> responseDTO = GeneralResponse
+        GeneralResponse<ProductResponseDTO> response = GeneralResponse
                 .<ProductResponseDTO>builder()
                 .status("SUCCESS")
                 .data(productResponseDTO)
                 .build();
 
-        return new ResponseEntity<>(responseDTO, HttpStatus.OK);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @PostMapping("/updateProduct/{productId}")
     public ResponseEntity<?> updateProduct(@PathVariable Integer productId,@RequestBody @Valid ProductRequestDTO productRequestDTO){
-        GeneralResponse<?> responseDTO = shopKartProductService.updateProduct(productId,productRequestDTO);
-        return new ResponseEntity<>(responseDTO, HttpStatus.OK);
+        GeneralResponse<?> response = shopKartProductService.updateProduct(productId,productRequestDTO);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }
