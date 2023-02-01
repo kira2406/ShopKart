@@ -1,10 +1,10 @@
 package com.ecommerce.Shopkart.Service;
 
-import com.ecommerce.Shopkart.Dto.GeneralResponse;
-import com.ecommerce.Shopkart.Dto.UserDetails;
+import com.ecommerce.Shopkart.Entity.UserDetails;
 
 public interface ShopKartUserService {
-    GeneralResponse userLogin(UserDetails userDetails);
 
-    GeneralResponse userRegister(UserDetails userDetails);
+    UserDetails userRegister(UserDetails userDetails);
+
+    UserDetails loadUserByUsername(String userId);
 }

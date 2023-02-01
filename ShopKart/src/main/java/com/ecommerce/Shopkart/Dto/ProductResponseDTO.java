@@ -1,23 +1,13 @@
 package com.ecommerce.Shopkart.Dto;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
-@Entity
-@Getter
-@Setter
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ProductInfo {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+public class ProductResponseDTO {
     private Integer productId;
     private String productName;
     private Double productCost;

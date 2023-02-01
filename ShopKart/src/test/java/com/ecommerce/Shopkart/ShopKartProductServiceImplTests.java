@@ -1,7 +1,7 @@
 package com.ecommerce.Shopkart;
 
 import com.ecommerce.Shopkart.Dto.GeneralResponse;
-import com.ecommerce.Shopkart.Dto.ProductInfo;
+import com.ecommerce.Shopkart.Entity.ProductInfo;
 import com.ecommerce.Shopkart.Repo.ProductDetailsRepository;
 import com.ecommerce.Shopkart.ServiceImpl.ShopKartProductServiceImpl;
 import org.junit.jupiter.api.Assertions;
@@ -176,7 +176,7 @@ public class ShopKartProductServiceImplTests {
     @Test
     public void updateProductNullTest()
     {
-        GeneralResponse response = shopKartProductService.updateProduct(null);
+        GeneralResponse response = shopKartProductService.updateProduct(null, productRequestDTO);
         GeneralResponse expected = GeneralResponse.builder().statusCode(String.valueOf(HttpStatus.BAD_REQUEST.value())).statusDesc("No product Id entered").build();
         Assertions.assertEquals(expected.getStatusCode(), response.getStatusCode());
         Assertions.assertEquals(expected.getStatusDesc(), response.getStatusDesc());
@@ -196,7 +196,7 @@ public class ShopKartProductServiceImplTests {
         when(productDetailsRepository.existsById(productInfo.getProductId())).thenReturn(true);
         when(productDetailsRepository.save(productInfo)).thenReturn(productInfo);
 
-        GeneralResponse response = shopKartProductService.updateProduct(productInfo);
+        GeneralResponse response = shopKartProductService.updateProduct(productInfo, productRequestDTO);
         GeneralResponse expected = GeneralResponse.builder().statusCode(String.valueOf(HttpStatus.OK.value())).statusDesc("Product updated successfully").build();
         Assertions.assertEquals(expected.getStatusCode(), response.getStatusCode());
         Assertions.assertEquals(expected.getStatusDesc(), response.getStatusDesc());
@@ -210,7 +210,7 @@ public class ShopKartProductServiceImplTests {
 
         when(productDetailsRepository.existsById(productInfo.getProductId())).thenReturn(true);
 
-        GeneralResponse response = shopKartProductService.updateProduct(productInfo);
+        GeneralResponse response = shopKartProductService.updateProduct(productInfo, productRequestDTO);
         GeneralResponse expected = GeneralResponse.builder().statusCode(String.valueOf(HttpStatus.BAD_REQUEST.value())).statusDesc("Insufficient data").build();
         Assertions.assertEquals(expected.getStatusCode(), response.getStatusCode());
         Assertions.assertEquals(expected.getStatusDesc(), response.getStatusDesc());
@@ -224,7 +224,7 @@ public class ShopKartProductServiceImplTests {
 
         when(productDetailsRepository.existsById(productInfo.getProductId())).thenReturn(false);
 
-        GeneralResponse response = shopKartProductService.updateProduct(productInfo);
+        GeneralResponse response = shopKartProductService.updateProduct(productInfo, productRequestDTO);
         GeneralResponse expected = GeneralResponse.builder().statusCode(String.valueOf(HttpStatus.BAD_REQUEST.value())).statusDesc("No product exists with ID "+productInfo.getProductId()).build();
         Assertions.assertEquals(expected.getStatusCode(), response.getStatusCode());
         Assertions.assertEquals(expected.getStatusDesc(), response.getStatusDesc());
@@ -238,7 +238,7 @@ public class ShopKartProductServiceImplTests {
 
         when(productDetailsRepository.existsById(productInfo.getProductId())).thenThrow(new RuntimeException());
 
-        GeneralResponse response = shopKartProductService.updateProduct(productInfo);
+        GeneralResponse response = shopKartProductService.updateProduct(productInfo, productRequestDTO);
         GeneralResponse expected = GeneralResponse.builder().statusCode(String.valueOf(HttpStatus.BAD_REQUEST.value())).statusDesc("Something went wrong").build();
         Assertions.assertEquals(expected.getStatusCode(), response.getStatusCode());
         Assertions.assertEquals(expected.getStatusDesc(), response.getStatusDesc());
