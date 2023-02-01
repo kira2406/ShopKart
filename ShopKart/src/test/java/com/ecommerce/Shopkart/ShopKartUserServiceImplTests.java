@@ -1,7 +1,7 @@
 package com.ecommerce.Shopkart;
 
 import com.ecommerce.Shopkart.Dto.GeneralResponse;
-import com.ecommerce.Shopkart.Dto.UserDetails;
+import com.ecommerce.Shopkart.Entity.UserDetails;
 import com.ecommerce.Shopkart.Repo.UserDetailsRepository;
 import com.ecommerce.Shopkart.ServiceImpl.ShopKartUserServiceImpl;
 import org.junit.jupiter.api.Assertions;

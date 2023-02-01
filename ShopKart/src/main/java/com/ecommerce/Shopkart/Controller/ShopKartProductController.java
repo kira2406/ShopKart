@@ -1,11 +1,9 @@
 package com.ecommerce.Shopkart.Controller;
 
 import com.ecommerce.Shopkart.Dto.GeneralResponse;
-import com.ecommerce.Shopkart.Dto.ProductInfo;
 import com.ecommerce.Shopkart.Dto.ProductRequestDTO;
 import com.ecommerce.Shopkart.Dto.ProductResponseDTO;
 import com.ecommerce.Shopkart.Service.ShopKartProductService;
-import com.ecommerce.Shopkart.Util.Util;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

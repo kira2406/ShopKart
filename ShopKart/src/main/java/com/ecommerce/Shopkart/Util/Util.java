@@ -1,6 +1,6 @@
 package com.ecommerce.Shopkart.Util;
 
-import com.ecommerce.Shopkart.Dto.ProductInfo;
+import com.ecommerce.Shopkart.Entity.ProductInfo;
 import com.ecommerce.Shopkart.Dto.ProductRequestDTO;
 import com.ecommerce.Shopkart.Dto.ProductResponseDTO;
 

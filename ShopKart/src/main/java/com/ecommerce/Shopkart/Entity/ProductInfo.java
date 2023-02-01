@@ -1,4 +1,4 @@
-package com.ecommerce.Shopkart.Dto;
+package com.ecommerce.Shopkart.Entity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

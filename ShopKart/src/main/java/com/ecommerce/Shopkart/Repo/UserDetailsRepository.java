@@ -1,6 +1,6 @@
 package com.ecommerce.Shopkart.Repo;
 
-import com.ecommerce.Shopkart.Dto.UserDetails;
+import com.ecommerce.Shopkart.Entity.UserDetails;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

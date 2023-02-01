@@ -2,9 +2,10 @@ import React, { useState } from 'react'
 import Card from 'react-bootstrap/Card'
 import CardHeader from 'react-bootstrap/CardHeader'
 import Form from 'react-bootstrap/Form'
-import { Button, FormControl, FormGroup, FormLabel } from 'react-bootstrap'
+import { Alert, Button, FormControl, FormGroup, FormLabel, Spinner } from 'react-bootstrap'
 import axios from 'axios'
 import { useNavigate } from 'react-router'
+import './login.css'
 
 const Login = () => {
 
@@ -12,14 +13,17 @@ const Login = () => {
 
     const [username, setUsername] = useState(null)
     const [password, setPassword] = useState(null)
+    const [loginError, setLoginError] = useState(false)
+    const [loading, setLoading] = useState(false)
 
 
     const userLogin = () => {
+        setLoading(true)
         console.log("userLogin function called")
         const login_api = "http://localhost:8080/authLogin"
 
         const request = {
-            "userId": username,
+            "username": username,
             "password": password
         }
         console.log(request)
@@ -27,15 +31,18 @@ const Login = () => {
         axios.post(login_api, request)
             .then(response => {
                 response = response.data
-                if (response.statusCode == "200") {
-                    console.log("Login successful")
-                    // redirect to home page
-                    navigate("/")
-                } else {
-                    console.log("Login failed")
-                }
+
+                console.log("Login successful")
+                // redirect to home page
+                setLoading(false)
+                navigate("/")
             })
-            .catch(e => console.log("error " + e))
+            .catch(e => {
+                setLoginError(true)
+                setLoading(false)
+                console.log("Login failed")
+                console.log("error " + e)
+            })
     }
 
     const usernameHandler = (e) => {
@@ -47,13 +54,15 @@ const Login = () => {
     }
 
     return (
-        <div className='container'>
+        <div className='container loginContainer paddingTop30' id="loginForm">
             <Card>
                 <CardHeader>
                     Login
                 </CardHeader>
                 <Card.Body>
                     <Form>
+                        {loginError && <Alert key='danger' variant='danger'> Incorrect username or password</Alert>
+                        }
                         <FormGroup className='mb-3'>
                             <FormLabel>Username</FormLabel>
                             <FormControl type='text' placeholder='Username' onChange={usernameHandler} />
@@ -63,7 +72,7 @@ const Login = () => {
                             <FormControl type='password' placeholder='Password' onChange={passwordHandler} />
                         </FormGroup>
                         <Button variant="success" type="button" onClick={userLogin}>
-                            Login
+                            {(loading) ? <Spinner animation="border" /> : "Login"}
                         </Button>
                     </Form>
                 </Card.Body>

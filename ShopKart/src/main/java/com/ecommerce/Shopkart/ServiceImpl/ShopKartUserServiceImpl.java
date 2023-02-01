@@ -1,7 +1,6 @@
 package com.ecommerce.Shopkart.ServiceImpl;
 
-import com.ecommerce.Shopkart.Dto.GeneralResponse;
-import com.ecommerce.Shopkart.Dto.UserDetails;
+import com.ecommerce.Shopkart.Entity.UserDetails;
 import com.ecommerce.Shopkart.Exception.ControllerException;
 import com.ecommerce.Shopkart.Exception.UsernameNotFoundException;
 import com.ecommerce.Shopkart.Repo.UserDetailsRepository;
@@ -9,7 +8,6 @@ import com.ecommerce.Shopkart.Service.ShopKartUserService;
 import com.ecommerce.Shopkart.Util.Util;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 @Service

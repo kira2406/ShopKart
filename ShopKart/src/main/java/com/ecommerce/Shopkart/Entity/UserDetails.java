@@ -1,4 +1,4 @@
-package com.ecommerce.Shopkart.Dto;
+package com.ecommerce.Shopkart.Entity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -16,14 +16,14 @@ public class UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
-    @NonNull
+
     private String name;
-    @NonNull
+
     private String username;
-    @NonNull
+
     private String password;
-    @NonNull
+
     private String emailId;
-    @NonNull
+
     private String phoneNo;
 }

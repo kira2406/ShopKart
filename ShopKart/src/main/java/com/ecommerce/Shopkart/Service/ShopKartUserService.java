@@ -1,7 +1,6 @@
 package com.ecommerce.Shopkart.Service;
 
-import com.ecommerce.Shopkart.Dto.GeneralResponse;
-import com.ecommerce.Shopkart.Dto.UserDetails;
+import com.ecommerce.Shopkart.Entity.UserDetails;
 
 public interface ShopKartUserService {
 

@@ -1,7 +1,7 @@
 package com.ecommerce.Shopkart.Controller;
 
 import com.ecommerce.Shopkart.Dto.UserCredentials;
-import com.ecommerce.Shopkart.Dto.UserDetails;
+import com.ecommerce.Shopkart.Entity.UserDetails;
 import com.ecommerce.Shopkart.Exception.ControllerException;
 import com.ecommerce.Shopkart.Exception.LoginFailedException;
 import com.ecommerce.Shopkart.Service.ShopKartUserService;
